@@ -9,7 +9,7 @@ const composeStringFromValues = require("./composeStringFromValues");
 const app = express();
 
 const ownData = {
-  name: "balfeuhfehuefhufh",
+  name: "fabian",
   amount: 1
 };
 
@@ -66,7 +66,8 @@ const generateHashWithPossibleNonces = async (
   nonce = -1,
   timeout = 4000
 ) => {
-  const hash = mod10.hash(`${str}${nonce}`);
+  console.log(str);
+  const hash = mod10.hash(`${str}${nonce.toString()}`);
   console.log(nonce, hash);
   if (isCorrectBlock(hash)) return { hash, nonce };
 
@@ -95,27 +96,26 @@ const mine = async () => {
   const prevHash = mod10.hash(prevHashString);
 
   const nextHashString = generateNextHashString(data, ownData, prevHash);
-  await h(nextHashString, 1);
   const { nonce } = await generateHashWithPossibleNonces(nextHashString);
   console.timeEnd("mined in");
   const res = await postBlock(nonce);
   console.log(`Posted solution with nonce ${nonce}`, res.data);
 };
 
-const h = async (str, iNonce = -1) => {
-  const { nonce } = await generateHashWithPossibleNonces(str, iNonce);
-  console.timeEnd("mined in");
-  const res = await postBlock(nonce);
-  console.log(`Posted solution with nonce ${nonce}`, res.data);
+// const h = async (str, iNonce = -1) => {
+//   const { nonce } = await generateHashWithPossibleNonces(str, iNonce);
+//   console.timeEnd("mined in");
+//   const res = await postBlock(nonce);
+//   console.log(`Posted solution with nonce ${nonce}`, res.data);
 
-  if (res.data.message === "nonce not correct") {
-    console.log(res.data.message);
-    await sleep(1000);
-    await h(str, nonce + 1);
-  } else {
-    console.log("CONGRATS", res.data);
-  }
-};
+//   if (res.data.message === "nonce not correct") {
+//     console.log(res.data.message);
+//     await sleep(1000);
+//     await h(str, nonce + 1);
+//   } else {
+//     console.log("CONGRATS", res.data);
+//   }
+// };
 
 app.set("port", 3000);
 app.listen(app.get("port"), async () => {
