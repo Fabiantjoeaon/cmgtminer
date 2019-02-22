@@ -1,0 +1,2 @@
+# cmgtminer
+CMGT Miner
