@@ -45,14 +45,14 @@ const generatePreviousHashString = ({ blockchain }) => {
 
 const generateNextHashString = (
   { transactions, timestamp: rootTimestamp },
-  ownData,
+  { name, amount },
   prevHash
 ) => {
   const nextHashValues = [prevHash];
-  for (const { from } of transactions) {
-    nextHashValues.push([from]);
+  for (const { from, to } of transactions) {
+    nextHashValues.push([from, to]);
   }
-  nextHashValues.push([ownData.name, ownData.amount]);
+  nextHashValues.push([amount]);
   for (const { timestamp } of transactions) {
     nextHashValues.push([timestamp]);
   }
@@ -66,7 +66,6 @@ const generateHashWithPossibleNonces = async (
   nonce = -1,
   timeout = 4000
 ) => {
-  console.log(str);
   const hash = mod10.hash(`${str}${nonce.toString()}`);
   console.log(nonce, hash);
   if (isCorrectBlock(hash)) return { hash, nonce };
