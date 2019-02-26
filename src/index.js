@@ -13,8 +13,16 @@ const ownData = {
   amount: 1
 };
 
+/**
+ * Fetches latest block of the blockchain
+ */
 const getFinalBlock = () =>
   axios.get("http://programmeren9.cmgt.hr.nl:8000/api/blockchain/next");
+
+/**
+ * Posts solution
+ * @param {*} nonce
+ */
 const postBlock = nonce =>
   axios.post(
     "http://programmeren9.cmgt.hr.nl:8000/api/blockchain",
@@ -31,8 +39,16 @@ const postBlock = nonce =>
 
 const sleep = time => new Promise(resolve => setTimeout(resolve, time));
 
+/**
+ * Checks if hash is correct (when it has 4 leading 0's)
+ * @param {*} hash
+ */
 const isCorrectBlock = hash => hash.slice(0, 4) === "0000";
 
+/**
+ * Generate string to hash based on previous block
+ * @param {*} param0
+ */
 const generatePreviousHashString = ({ blockchain }) => {
   const previousHashValues = [blockchain.hash];
   for (const { from, to, amount, timestamp } of blockchain.data) {
@@ -43,6 +59,12 @@ const generatePreviousHashString = ({ blockchain }) => {
   return composeStringFromValues(flatten(previousHashValues));
 };
 
+/**
+ * Generate string to hash based on next block
+ * @param {*} param0
+ * @param {*} param1
+ * @param {*} prevHash
+ */
 const generateNextHashString = (
   { transactions, timestamp: rootTimestamp },
   { name, amount },
@@ -61,6 +83,9 @@ const generateNextHashString = (
   return composeStringFromValues(flatten(nextHashValues));
 };
 
+/**
+ * Generates hash with an incrementing nonce (done with next block values)
+ */
 const generateHashWithPossibleNonces = async (
   str,
   nonce = -1,
